@@ -1,0 +1,114 @@
+Here’s a from-scratch RunPod setup your teammate can follow to be aligned with you without any requirements file. This is copy-paste friendly and matches the workflow you validated (Conda + ds_gpu + Jupyter kernel + CUDA torch).
+
+RunPod Setup (From Scratch) — Aligned to Tristan
+0) Start the Pod
+
+Create a RunPod PyTorch/Jupyter pod (any CUDA GPU).
+
+Open JupyterLab.
+
+Open Terminal (Launcher → Terminal).
+
+1) Install Miniconda to /workspace/miniconda3
+cd /workspace
+wget -O miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash miniconda.sh -b -p /workspace/miniconda3
+rm miniconda.sh
+
+
+Add conda to PATH for this session:
+
+export PATH="/workspace/miniconda3/bin:$PATH"
+conda --version
+
+
+(Optional but recommended) Make PATH persistent:
+
+echo 'export PATH="/workspace/miniconda3/bin:$PATH"' >> ~/.bashrc
+
+
+Initialize conda:
+
+conda init bash
+
+
+✅ Close the terminal tab and open a new terminal.
+
+2) Create + activate the env
+conda create -n ds_gpu python=3.10 -y
+conda activate ds_gpu
+
+
+Verify:
+
+which python
+python --version
+
+3) Install GPU PyTorch (critical)
+pip install --upgrade pip
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+
+Verify CUDA:
+
+python - << 'EOF'
+import torch
+print("Torch:", torch.__version__)
+print("CUDA:", torch.cuda.is_available())
+if torch.cuda.is_available():
+    print("GPU:", torch.cuda.get_device_name(0))
+EOF
+
+4) Install core DS stack (no requirements.txt)
+conda install -y numpy pandas scipy scikit-learn matplotlib seaborn tqdm bottleneck
+
+
+If needed for project extras:
+
+pip install transformers sentence-transformers xgboost lightgbm optuna shap
+
+5) Register the Jupyter kernel for ds_gpu
+pip install ipykernel
+python -m ipykernel install --user --name ds_gpu --display-name "Python (ds_gpu)"
+
+
+Refresh JupyterLab (reload tab).
+
+6) Open Tristan’s notebook and switch kernel
+
+In notebook:
+
+Kernel → Change Kernel → Python (ds_gpu)
+
+Run this verification cell:
+
+import sys, torch
+print("Python:", sys.executable)
+print("Torch:", torch.__version__)
+print("CUDA:", torch.cuda.is_available())
+print("GPU:", torch.cuda.get_device_name(0))
+
+
+✅ Expected:
+
+Python path includes /workspace/miniconda3/envs/ds_gpu
+
+CUDA True
+
+GPU name prints
+
+7) Data loading note (important)
+
+If the CSV throws UTF-8 errors, read with:
+
+pd.read_csv("yourfile.csv", encoding="cp1252")
+
+Quick “After Pod Restart” Recovery (30 seconds)
+
+In a new terminal:
+
+export PATH="/workspace/miniconda3/bin:$PATH"
+conda activate ds_gpu
+
+
+If notebook kernel isn’t ds_gpu, reselect it.
