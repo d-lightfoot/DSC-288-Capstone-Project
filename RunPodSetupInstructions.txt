@@ -1,6 +1,6 @@
-Here’s a from-scratch RunPod setup your teammate can follow to be aligned with you without any requirements file. This is copy-paste friendly and matches the workflow you validated (Conda + ds_gpu + Jupyter kernel + CUDA torch).
+Here’s a from-scratch RunPod setup you can follow to be aligned without any requirements file. This is copy-paste friendly and matches the workflow we validated (Conda + ds_gpu + Jupyter kernel + CUDA torch).
 
-RunPod Setup (From Scratch) — Aligned to Tristan
+RunPod Setup (From Scratch)
 0) Start the Pod
 
 Create a RunPod PyTorch/Jupyter pod (any CUDA GPU).
@@ -74,7 +74,7 @@ python -m ipykernel install --user --name ds_gpu --display-name "Python (ds_gpu)
 
 Refresh JupyterLab (reload tab).
 
-6) Open Tristan’s notebook and switch kernel
+6) Open notebook and switch kernel
 
 In notebook:
 
